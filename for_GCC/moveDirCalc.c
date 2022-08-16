@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-void move_DirCalc(double direction,double compass_point,double *move_direction){
+void moveDirCalc(double direction,double compass_point,double *move_direction){
 	if(direction > compass_point){
 		double A = direction-compass_point;
 		double B = 360-A;
