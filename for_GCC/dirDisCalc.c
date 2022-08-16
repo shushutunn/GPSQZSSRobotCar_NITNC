@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-void directionCalc(double lat1,double lng1,double lat2,double lng2,double *dis,double *dir){
+void dirDisCalc(double lat1,double lng1,double lat2,double lng2,double *dis,double *dir){
 	double pi = 3.14159265359;
 	lat1=lat1*pi/180;
 	lat2=lat2*pi/180;
@@ -15,7 +15,7 @@ void directionCalc(double lat1,double lng1,double lat2,double lng2,double *dis,d
 int main(void){
 	double dis,dir;
 
-	directionCalc(245.423545,140,34,135,&dis,&dir);
+	dirDisCalc(245.423545,140,34,135,&dis,&dir);
 	printf("distance:%lf,direction:%lf\n",dis,dir);
 	return 0;
 }
