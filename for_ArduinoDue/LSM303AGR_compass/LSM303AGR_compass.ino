@@ -1,7 +1,8 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LIS2MDL.h>
-
+#define MAG_X_OFFSET 45
+#define MAG_Y_OFFSET 13
 
 Adafruit_LIS2MDL mag = Adafruit_LIS2MDL(12345);
 
@@ -28,7 +29,7 @@ void loop(void)
   float Pi = 3.14159;
 
   // Calculate the angle of the vector y,x
-  float heading = (atan2(event.magnetic.y,event.magnetic.x) * 180) / Pi;
+  float heading = (atan2(event.magnetic.y+MAG_Y_OFFSET,event.magnetic.x+MAG_X_OFFSET) * 180) / Pi;
 
   // Normalize to 0-360
   if (heading < 0)

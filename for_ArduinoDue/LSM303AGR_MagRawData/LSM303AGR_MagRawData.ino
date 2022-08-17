@@ -51,9 +51,9 @@ void loop(void) {
 ////  Serial.println("uT");
 
 
-  Serial.print(event.magnetic.x);
+  Serial.print(event.magnetic.x+45);
   Serial.print(",");
-  Serial.println(event.magnetic.y);
+  Serial.println(event.magnetic.y+13);
 
   /* Note: You can also get the raw (non unified values) for */
   /* the last data sample as follows. The .getEvent call populates */
