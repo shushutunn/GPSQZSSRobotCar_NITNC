@@ -9,13 +9,15 @@ void dirDisCalc(double lat1,double lng1,double lat2,double lng2,double *dis,doub
 	double earth_radius=6378.137;
 	*dis = earth_radius * acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lng2-lng1));
 	*dir = 90-(180/pi*(atan2((cos(lat1)*tan(lat2)-sin(lat1)*cos(lng2-lng1)),sin(lng2-lng1))));
-
+	if(*dir<0){
+		*dir+=360;
+	}
 }
 
 int main(void){
 	double dis,dir;
 
-	dirDisCalc(245.423545,140,34,135,&dis,&dir);
+	dirDisCalc(34.64,135.76,34.65,135.759,&dis,&dir);
 	printf("distance:%lf,direction:%lf\n",dis,dir);
 	return 0;
 }
