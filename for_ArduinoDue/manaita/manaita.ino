@@ -57,6 +57,8 @@ void getData(double *gps_lat, double *gps_lng, float *compass_deg) {
   {
     *compass_deg = 360 + *compass_deg;
   }
+
+  *compass_deg = 360 - *compass_deg
  
   while (1) {
     while (Serial1.available() > 0) {
