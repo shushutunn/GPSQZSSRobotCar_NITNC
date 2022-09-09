@@ -41,7 +41,7 @@ void loop() {
   moveDirCalc(direction,degree,&move_direction);
   Serial.print("LAT="); Serial.println(latitude, 10);
   Serial.print("LONG="); Serial.println(longnitude, 10);
-  Serial.print("ALT="); Serial.println(degree);
+  Serial.print("DEG="); Serial.println(degree);
   Serial.print("DIS="); Serial.println(distance);
   Serial.print("DIR="); Serial.println(direction);
   Serial.print("MOVE="); Serial.println(move_direction); 
@@ -58,7 +58,6 @@ void getData(double *gps_lat, double *gps_lng, float *compass_deg) {
     *compass_deg = 360 + *compass_deg;
   }
 
-  *compass_deg = 360 - *compass_deg
  
   while (1) {
     while (Serial1.available() > 0) {
