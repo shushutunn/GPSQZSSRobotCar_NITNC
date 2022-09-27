@@ -49,7 +49,8 @@ void getData(double *gps_lat, double *gps_lng, float *compass_deg) {
     *compass_deg = 360 + *compass_deg;
   }
  
-  while (1) {
+  unsigned long gps_start_time = millis();
+  while (gps_start_time - millis() < 500) {
     while (Serial1.available() > 0) {
       char c = Serial1.read();
 //       Serial.print(c);

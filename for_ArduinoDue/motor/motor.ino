@@ -4,6 +4,8 @@
 #define  R_MOTOR_INA 4
 #define  R_MOTOR_INB 2
 #define  R_MOTOR_PWM 3
+#define  BTN_1 9
+
 
 
 void setup() {
@@ -12,41 +14,47 @@ void setup() {
   pinMode(L_MOTOR_INB,OUTPUT);
   pinMode(R_MOTOR_INA,OUTPUT);
   pinMode(R_MOTOR_INB,OUTPUT);
-
+  pinMode(BTN_1,INPUT_PULLUP);
+	while(digitalRead(BTN_1) == HIGH);
 }
 
 void loop() {
 
 
-  setMotorPower(500,500,false,false);
+  setMotorPower(500,500,false);
   delay(500);
-  setMotorPower(-500,-500,false,false);
+  setMotorPower(0,0,true);
   delay(500);
-  setMotorPower(500,-500,false,false);
+  setMotorPower(-500,-500,false);
   delay(500);
-  setMotorPower(-500,500,false,false);
+  setMotorPower(0,0,false);
   delay(500);
-  setMotorPower(500,-500,false,false);
+  setMotorPower(500,-500,false);
   delay(500);
-  setMotorPower(0,0,true,true);
+  setMotorPower(0,0,false);
   delay(500);
+  setMotorPower(-500,500,false);
+  delay(500);
+  setMotorPower(0,0,false);
+  delay(500);
+  setMotorPower(500,-500,false);
+  delay(500);
+  setMotorPower(0,0,false);
+  delay(500);
+  while(1){
+    
+  }
 } 
 
-void setMotorPower(int l_power,int r_power,boolean l_break,boolean r_break){
+void setMotorPower(int l_power,int r_power,boolean m_break){
 
-  if(l_break == true || r_break == true){
-  if(l_break == true){
+  if(m_break == true){
     digitalWrite(L_MOTOR_INA,HIGH);
     digitalWrite(L_MOTOR_INB,HIGH);
     analogWrite(L_MOTOR_PWM,0);
-    
-  }
-  if(r_break == true){
     digitalWrite(R_MOTOR_INA,HIGH);
     digitalWrite(R_MOTOR_INB,HIGH);
     analogWrite(R_MOTOR_PWM,0);
-    
-  }
   return;
   }
   

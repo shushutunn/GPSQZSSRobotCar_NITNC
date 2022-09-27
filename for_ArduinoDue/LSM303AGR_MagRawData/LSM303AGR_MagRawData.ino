@@ -51,7 +51,7 @@ void loop(void) {
 ////  Serial.println("uT");
 
 
-  Serial.print(event.magnetic.x+45);
+  Serial.print(event.magnetic.x+70);
   Serial.print(",");
   Serial.println(event.magnetic.y+13);
 
