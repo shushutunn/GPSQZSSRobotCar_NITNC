@@ -56,14 +56,14 @@ void loop() {
   double pA_lng=135.75943433;
   double pB_lat=34.64763883;
   double pB_lng=135.75926217;
-getData(&latitude,&longnitude,&degree);
-  Serial.print(gps.time.hour()+9);Serial.print(":");Serial.print(gps.time.minute());Serial.print(":");Serial.println(gps.time.second());
-//  app_pi(pA_lat,pA_lng);
-//  lotate_pi(pA_lat,pA_lng,pB_lat,pB_lng,0);
-//  app_pi(pB_lat,pB_lng);
-//  lotate_pi(pB_lat,pB_lng,pA_lat,pA_lng,1);
-//  
-//  
+ //時間の取得サンプル。グリニッジ標準時で出てくるので9時間足す。getData実行後でないと取得できない。
+ // Serial.print(gps.time.hour()+9);Serial.print(":");Serial.print(gps.time.minute());Serial.print(":");Serial.println(gps.time.second());
+  app_pi(pA_lat,pA_lng);
+  lotate_pi(pA_lat,pA_lng,pB_lat,pB_lng,0);
+  app_pi(pB_lat,pB_lng);
+  lotate_pi(pB_lat,pB_lng,pA_lat,pA_lng,1);
+  
+  
 /*
   getData(&latitude, &longnitude, &degree);
   dirDisCalc(latitude, longnitude, 34.64775033, 135.759442400, &distance, &direction);
