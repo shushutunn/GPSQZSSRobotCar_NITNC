@@ -26,7 +26,7 @@ double latitude, longnitude;
 float degree;
 double move_direction;
 int limittime;
-
+int recordtime;
 
 void setup() {
   pinMode(L_MOTOR_INA, OUTPUT);
@@ -66,12 +66,12 @@ void setup() {
 
 void loop() {
 
-  double pA_lat=34.6477473330;
-  double pA_lng=135.7592185000;
-  double pB_lat=34.6477441670;
-  double pB_lng=135.7594395000;
-  double center_lat=34.6477448330;
-  double center_lng=135.7593291670;
+  double pA_lat=34.64774900;
+  double pA_lng=135.75922533;
+  double pB_lat=34.64764383;
+  double pB_lng=135.75940567;
+  double center_lat=34.64769617;
+  double center_lng=135.75931567;
 //  getData(&latitude, &longnitude, &degree);
 //   Serial.print("limittime=");Serial.println(limittime);
 //   Serial.print("nowtime=");Serial.println((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second());
@@ -170,7 +170,7 @@ void getData(double *gps_lat, double *gps_lng, float *compass_deg) {
       char c = Serial1.read();
       //       Serial.print(c);
       gps.encode(c);
-      if (gps.location.isUpdated() || millis() > gps_start_time + 50) {
+      if (gps.location.isUpdated() || millis() > gps_start_time + 10) {
         *gps_lat = gps.location.lat();
         *gps_lng = gps.location.lng();
         return ;
@@ -268,9 +268,9 @@ void app_center(double g_lat, double g_lng) {
   } else if (move_direction > -45 && move_direction < 0) {
     setMotorPower(0, 200, false);
   } else if (move_direction < 0) {
-    setMotorPower(-200, 200, false);
+    setMotorPower(-230, 230, false);
   } else {
-    setMotorPower(200, -200, false);
+    setMotorPower(230, -230, false);
   }
   
   Serial.print("app:lat=");Serial.println(latitude,10);
@@ -301,9 +301,9 @@ void app_pi(double g_lat, double g_lng) {
   } else if (move_direction > -45 && move_direction < 0) {
     setMotorPower(0, 200, false);
   } else if (move_direction < 0) {
-    setMotorPower(-200, 200, false);
+    setMotorPower(-230, 230, false);
   } else {
-    setMotorPower(200, -200, false);
+    setMotorPower(230, -230, false);
   }
   
   Serial.print("app:lat=");Serial.println(latitude,10);
@@ -321,6 +321,7 @@ void app_pi(double g_lat, double g_lng) {
     double other_dist;
     double tmp;
     bool over=false;
+    bool cl=false;
     while(1){
             getData(&latitude,&longnitude,&degree);
   dirDisCalc(latitude,longnitude,p_lat,p_lng,&distance,&direction);
@@ -329,20 +330,20 @@ void app_pi(double g_lat, double g_lng) {
   //distance degree
 
     if(clock==0){
-      if(distance>0.0015){
+      if(distance>0.0010){
         move_direction-=50;
-      }else if(distance<0.0005){
+      }else if(distance<0.0007){
         move_direction-=130;
       }else{
-        move_direction-=90;
+        move_direction-=80;
       }
      }else{
-      if(distance>0.0015){
+      if(distance>0.0010){
         move_direction+=50;
-      }else if(distance<0.0005){
+      }else if(distance<0.0007){
         move_direction+=130;
       }else{
-        move_direction+=90;
+        move_direction+=80;
       }
      }
      if(move_direction<-180){
@@ -354,21 +355,31 @@ void app_pi(double g_lat, double g_lng) {
       if(move_direction<20&&move_direction>-20){
         setMotorPower(100,100,false);
       }else if(move_direction<0){
-        setMotorPower(-200,200,false);
+        setMotorPower(-230,230,false);
       }else{
-        setMotorPower(250,-100,false);
+        setMotorPower(230,-230,false);
       }
       
       dirDisCalc(latitude,longnitude,next_p_lat,next_p_lng,&other_dist,&tmp);
-      if(over==true&&other_dist<0.0195){
-        break;
-        }else if(other_dist>0.0205){
+      if(over==true&&other_dist<0.0195&&!cl){
+        cl = true;
+      }
+      if(!over && other_dist>0.0205){
           over = true;
         }
+      if(cl&&other_dist>0.020){
+        break;}
       }
+     
     
   }
-
+void time_record(int time){
+    recordtime = time;
+}
+bool time_break(int time,int limit){
+    if(recordtime+limit<time)return true;
+    return false; 
+}
 /*
   void move_ctr(double[2] r,double[2] l,double[2] c,double *lat,double *lng){
   r_m_dis=disCalc(r[1],r[0],*lat,*lng);
