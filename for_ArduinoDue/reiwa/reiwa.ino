@@ -19,6 +19,7 @@ Adafruit_LIS2MDL mag = Adafruit_LIS2MDL(12345);
 #define  R_MOTOR_INB 2
 #define  R_MOTOR_PWM 3
 #define  BTN_1 9
+#define  COUNTER_ROTATION_SPEED
 
 double distance;
 double direction;

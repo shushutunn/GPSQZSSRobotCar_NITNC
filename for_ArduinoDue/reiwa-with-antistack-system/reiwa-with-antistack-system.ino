@@ -20,6 +20,11 @@ Adafruit_LIS2MDL mag = Adafruit_LIS2MDL(12345);
 #define  R_MOTOR_PWM 3
 #define  BTN_1 9
 
+#define  COUNTER_ROTATION_SPEED 220
+#define  ONE_SIDE_ROTATION_SPEED 230
+#define  FAST_PROG_SPEED 150
+#define  SLOW_PROG_SPEED 70
+
 double distance;
 double direction;
 double latitude, longnitude;
@@ -259,18 +264,18 @@ void app_center(double g_lat, double g_lng) {
   
   if (move_direction < 10 && move_direction > -10) {
     if(distance < 0.005){
-      setMotorPower(70,70,false);
+      setMotorPower(SLOW_PROG_SPEED,SLOW_PROG_SPEED,false);
     }else{
-      setMotorPower(150, 150, false);
+      setMotorPower(FAST_PROG_SPEED, FAST_PROG_SPEED, false);
     }
   } else if (move_direction < 45 && move_direction > 0) {
-    setMotorPower(200, 0, false);
+    setMotorPower(ONE_SIDE_ROTATION_SPEED, 0, false);
   } else if (move_direction > -45 && move_direction < 0) {
-    setMotorPower(0, 200, false);
+    setMotorPower(0, ONE_SIDE_ROTATION_SPEED, false);
   } else if (move_direction < 0) {
-    setMotorPower(-230, 230, false);
+    setMotorPower(-COUNTER_ROTATION_SPEED, COUNTER_ROTATION_SPEED, false);
   } else {
-    setMotorPower(230, -230, false);
+    setMotorPower(COUNTER_ROTATION_SPEED, -COUNTER_ROTATION_SPEED, false);
   }
   
   Serial.print("app:lat=");Serial.println(latitude,10);
@@ -292,18 +297,18 @@ void app_pi(double g_lat, double g_lng) {
   
   if (move_direction < 10 && move_direction > -10) {
     if(distance < 0.005){
-      setMotorPower(70,70,false);
+      setMotorPower(SLOW_PROG_SPEED,SLOW_PROG_SPEED,false);
     }else{
-      setMotorPower(150, 150, false);
+      setMotorPower(FAST_PROG_SPEED, FAST_PROG_SPEED, false);
     }
   } else if (move_direction < 45 && move_direction > 0) {
-    setMotorPower(200, 0, false);
+    setMotorPower(ONE_SIDE_ROTATION_SPEED, 0, false);
   } else if (move_direction > -45 && move_direction < 0) {
-    setMotorPower(0, 200, false);
+    setMotorPower(0, ONE_SIDE_ROTATION_SPEED, false);
   } else if (move_direction < 0) {
-    setMotorPower(-230, 230, false);
+    setMotorPower(-COUNTER_ROTATION_SPEED, COUNTER_ROTATION_SPEED, false);
   } else {
-    setMotorPower(230, -230, false);
+    setMotorPower(COUNTER_ROTATION_SPEED, -COUNTER_ROTATION_SPEED, false);
   }
   
   Serial.print("app:lat=");Serial.println(latitude,10);
@@ -353,11 +358,11 @@ void app_pi(double g_lat, double g_lng) {
       }
     Serial.print("lotate:move_direction=");Serial.println(move_direction,10); 
       if(move_direction<20&&move_direction>-20){
-        setMotorPower(100,100,false);
+        setMotorPower(SLOW_PROG_SPEED,SLOW_PROG_SPEED,false);
       }else if(move_direction<0){
-        setMotorPower(-230,230,false);
+        setMotorPower(-COUNTER_ROTATION_SPEED,COUNTER_ROTATION_SPEED,false);
       }else{
-        setMotorPower(230,-230,false);
+        setMotorPower(COUNTER_ROTATION_SPEED,-COUNTER_ROTATION_SPEED,false);
       }
       
       dirDisCalc(latitude,longnitude,next_p_lat,next_p_lng,&other_dist,&tmp);
