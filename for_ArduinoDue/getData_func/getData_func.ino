@@ -7,7 +7,7 @@ TinyGPSPlus gps;
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LIS2MDL.h>
-#define MAG_X_OFFSET 45
+#define MAG_X_OFFSET 70
 #define MAG_Y_OFFSET 13
 
 Adafruit_LIS2MDL mag = Adafruit_LIS2MDL(12345);

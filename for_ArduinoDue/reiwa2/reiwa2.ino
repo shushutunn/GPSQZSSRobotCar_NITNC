@@ -19,9 +19,10 @@ Adafruit_LIS2MDL mag = Adafruit_LIS2MDL(12345);
 #define  R_MOTOR_INB 2
 #define  R_MOTOR_PWM 3
 #define  BTN_1 9
+#define  BUZ A0
 
-#define  COUNTER_ROTATION_SPEED 220
-#define  ONE_SIDE_ROTATION_SPEED 230
+#define  COUNTER_ROTATION_SPEED 180
+#define  ONE_SIDE_ROTATION_SPEED 255
 #define  FAST_PROG_SPEED 150
 #define  SLOW_PROG_SPEED 70
 
@@ -39,6 +40,9 @@ void setup() {
   pinMode(R_MOTOR_INA, OUTPUT);
   pinMode(R_MOTOR_INB, OUTPUT);
   pinMode(BTN_1, INPUT_PULLUP);
+  pinMode(A0, OUTPUT);
+  digitalWrite(BUZ,LOW);
+
 
   Serial.begin(9600);
 
@@ -65,18 +69,17 @@ void setup() {
     while (1);
   }
 
-  //app_pi(34.64775033, 135.759442400);
-  //lotate_pi(34.64775033, 135.759442400,0);
+
 }
 
 void loop() {
 
-  double pA_lat=34.64767117;
-  double pA_lng=135.75922217;
-  double pB_lat=34.64775633;
-  double pB_lng=135.75941233;
-  double center_lat=34.64771350;
-  double center_lng=135.75931817;
+  double pA_lat=34.64757683;
+  double pA_lng=135.75933800;
+  double pB_lat=34.64775833;
+  double pB_lng=135.75933800;
+  double center_lat=34.64766767;
+  double center_lng=135.75933750;
 //  getData(&latitude, &longnitude, &degree);
 //   Serial.print("limittime=");Serial.println(limittime);
 //   Serial.print("nowtime=");Serial.println((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second());
@@ -85,11 +88,18 @@ void loop() {
   
  //時間の取得サンプル。グリニッジ標準時で出てくるので9時間足す。getData実行後でないと取得できない。
  // Serial.print(gps.time.hour()+9);Serial.print(":");Serial.print(gps.time.minute());Serial.print(":");Serial.println(gps.time.second());
+
+
+    // app_center(center_lat,center_lng);
+    // while(1);
+
+ 
   app_pi(pA_lat,pA_lng);
   lotate_pi(pA_lat,pA_lng,pB_lat,pB_lng,0);
   if(limittime-int((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second())<60){
     //中心地に向かう
     app_center(center_lat,center_lng);
+
     while(1){
       
       }
@@ -99,6 +109,7 @@ void loop() {
     if(limittime-int((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second())<60){
     //中心地に向かう
         app_center(center_lat,center_lng);
+		
     while(1){
       
       }
@@ -107,7 +118,7 @@ void loop() {
 /*
   getData(&latitude, &longnitude, &degree);
   dirDisCalc(latitude, longnitude, 34.64775033, 135.759442400, &distance, &direction);
-  moveDirCalc(direction, degree, &move_direction);
+  moveDirCalc2(direction, degree, &move_direction);
   
     Serial.print("LAT="); Serial.println(latitude, 10);
     Serial.print("LONG="); Serial.println(longnitude, 10);
@@ -255,12 +266,33 @@ void moveDirCalc(double direction, double compass_point, double *move_direction)
     }
   }
 }
+
+void moveDirCalc2(double direction, double compass_point, double *move_direction) {
+  if (direction > compass_point) {
+    double A = direction - compass_point;
+    double B = 360 - A;
+    if (A > B) {
+      *move_direction = -B;
+    } else {
+      *move_direction = A;
+    }
+  } else {
+    double A = direction - compass_point;
+    double B = 360 + A;
+    if (abs(A) > B) {
+      *move_direction = B;
+    } else {
+      *move_direction = A;
+    }
+  }
+}
+
 void app_center(double g_lat, double g_lng) {
   while(1){
     
   getData(&latitude,&longnitude,&degree);
   dirDisCalc(latitude, longnitude, g_lat, g_lng, &distance, &direction);
-  moveDirCalc(direction, degree, &move_direction);
+  moveDirCalc2(direction, degree, &move_direction);
   
   if (move_direction < 10 && move_direction > -10) {
     if(distance < 0.003){
@@ -284,6 +316,10 @@ void app_center(double g_lat, double g_lng) {
       Serial.print("app:move_direction=");Serial.println(move_direction,10);
     if(distance<0.0003){
       setMotorPower(0,0,true);
+		digitalWrite(BUZ,HIGH);
+		delay(3000);
+		digitalWrite(BUZ,LOW);
+
       break;
     }
   }
@@ -293,7 +329,7 @@ void app_pi(double g_lat, double g_lng) {
     
   getData(&latitude,&longnitude,&degree);
   dirDisCalc(latitude, longnitude, g_lat, g_lng, &distance, &direction);
-  moveDirCalc(direction, degree, &move_direction);
+  moveDirCalc2(direction, degree, &move_direction);
   
   if (move_direction < 10 && move_direction > -10) {
     if(distance < 0.003){
@@ -328,13 +364,13 @@ void app_pi(double g_lat, double g_lng) {
     bool over=false;
     bool cl=false;
     while(1){
-            getData(&latitude,&longnitude,&degree);
-  dirDisCalc(latitude,longnitude,p_lat,p_lng,&distance,&direction);
-  moveDirCalc(direction,degree,&move_direction);
+        getData(&latitude,&longnitude,&degree);
+        dirDisCalc(latitude,longnitude,p_lat,p_lng,&distance,&direction);
+        moveDirCalc2(direction,degree,&move_direction);
       Serial.print("lotate:distance=");Serial.println(distance,10);
-  //distance degree
+       //distance degree
 
-    if(clock==0){
+      if(clock==0){
       if(distance>0.0010){
         move_direction-=50;
       }else if(distance<0.0007){
@@ -356,7 +392,7 @@ void app_pi(double g_lat, double g_lng) {
       }else if(move_direction>180){
         move_direction-=360;
       }
-    Serial.print("lotate:move_direction=");Serial.println(move_direction,10); 
+      Serial.print("lotate:move_direction=");Serial.println(move_direction,10); 
       if(move_direction<20&&move_direction>-20){
         setMotorPower(SLOW_PROG_SPEED,SLOW_PROG_SPEED,false);
       }else if(move_direction<0){
@@ -366,17 +402,53 @@ void app_pi(double g_lat, double g_lng) {
       }
       
       dirDisCalc(latitude,longnitude,next_p_lat,next_p_lng,&other_dist,&tmp);
-      if(over==true&&other_dist<0.0195&&!cl){
+      if(over==true&&other_dist<0.01945&&!cl){
         cl = true;
-		setMotorPower(0,0,false);
-		delay(1000);
+		break;
       }
-      if(!over && other_dist>0.0205){
+      if(!over && other_dist>0.0203){
           over = true;
+		  digitalWrite(BUZ,HIGH);
+		  delay(200);
+		  digitalWrite(BUZ,LOW);
         }
-      if(cl&&other_dist>0.0196){
-        break;}
+    }
+
+	  	getData(&latitude,&longnitude,&degree);
+  		dirDisCalc(latitude,longnitude,p_lat,p_lng,&distance,&direction);
+		float progress_degree = direction;
+		if(clock==0){
+        	progress_degree-=60;
+     	}else{
+       		progress_degree+=60;
+    	}
+     if(progress_degree>360){
+        progress_degree-=360;
+      }else if(progress_degree<0){
+        move_direction+=360;
       }
+  		// moveDirCalc2(direction,degree,&move_direction);
+
+	  while(1){
+	  	getData(&latitude,&longnitude,&degree);
+		dirDisCalc(latitude,longnitude,p_lat,p_lng,&distance,&direction);
+		moveDirCalc2(progress_degree,degree,&move_direction);
+		if (move_direction < 10 && move_direction > -10) {
+      setMotorPower(SLOW_PROG_SPEED,SLOW_PROG_SPEED,false);
+
+		} else if (move_direction < 45 && move_direction > 0) {
+			setMotorPower(ONE_SIDE_ROTATION_SPEED, 0, false);
+		} else if (move_direction > -45 && move_direction < 0) {
+			setMotorPower(0, ONE_SIDE_ROTATION_SPEED, false);
+		} else if (move_direction < 0) {
+			setMotorPower(-COUNTER_ROTATION_SPEED, COUNTER_ROTATION_SPEED, false);
+		} else {
+			setMotorPower(COUNTER_ROTATION_SPEED, -COUNTER_ROTATION_SPEED, false);
+		}
+		if(distance > 0.0013){
+		break;
+	  	}
+	  }
      
     
   }
@@ -392,7 +464,7 @@ bool time_break(int time,int limit){
   r_m_dis=disCalc(r[1],r[0],*lat,*lng);
   l_m_dis=disCalc(l[1],l[0],*lat,*lng);
   c_m_dis=disCalc(c[1],c[0],*lat,*lng);
-  moveDirCalc(direction,degree,&move_direction)
+  moveDirCalc2(direction,degree,&move_direction)
   if(r_m_dis<MAIN_SRC&&c_m_dis<CENTER_SRC){
     // to center set l
   }else if(l_m_dis<MAIN_SRC&&c_m_dis<CENTER_SRC){
