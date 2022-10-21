@@ -134,21 +134,22 @@ void loop() {
  //時間の取得サンプル。グリニッジ標準時で出てくるので9時間足す。getData実行後でないと取得できない。
  // Serial.print(gps.time.hour()+9);Serial.print(":");Serial.print(gps.time.minute());Serial.print(":");Serial.println(gps.time.second());
 
-while(1){
- getData(&latitude, &longnitude, &degree);
-	
-	// Serial.print(int((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second()));
-	// Serial.print("\t");
-	// Serial.println(limittime);
-if(limittime-int((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second())<160	){
-    //中心地に向かう
-    app_center(center_lat,center_lng);
-	// Serial.print("MOVE");
-    while(1){
-      
-      }
-    }
-}
+	//TimeKeeping Test
+	// while(1){
+	//  getData(&latitude, &longnitude, &degree);
+		
+	// 	// Serial.print(int((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second()));
+	// 	// Serial.print("\t");
+	// 	// Serial.println(limittime);
+	// if(limittime-int((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second())<160	){
+	//     //中心地に向かう
+	//     app_center(center_lat,center_lng);
+	// 	// Serial.print("MOVE");
+	//     while(1){
+		
+	//       }
+	//     }
+	// }
     // while(1);
 
  
