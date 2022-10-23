@@ -26,3 +26,8 @@ GNSS・QZSS ロボットカーコンテスト 2022
 ## 3. ハードウェア構成
 
 ![特徴２](https://user-images.githubusercontent.com/50289058/197382960-07b11215-607a-44c2-b948-bab7e8f547c6.jpg)
+
+## 4. YouTubeチャンネル
+エントリー動画・走行の様子が上がっています。
+<br>
+https://www.youtube.com/watch?v=P9n53t3C3Kk
