@@ -72,7 +72,6 @@ void setup()
 	getDataFirst(&tmp, &tmpp, &tmppp);
 	if (!mag.begin())
 	{
-		// There was a problem detecting the LIS2MDL ... check your connections
 		Serial.println("Ooops, no LIS2MDL detected ... Check your wiring!");
 		while (1)
 			;
@@ -120,10 +119,8 @@ void loop()
 	double pB_lng = 139.79399841;
 	double center_lat = 35.66803451;
 	double center_lng = 139.79392100;
-	//時間の取得サンプル。グリニッジ標準時で出てくるので9時間足す。getData実行後でないと取得できない。
-	// Serial.print(gps.time.hour()+9);Serial.print(":");Serial.print(gps.time.minute());Serial.print(":");Serial.println(gps.time.second());
 
-	// TimeKeeping Test
+	// ----------TimeKeeping System Test----------
 	//  while(1){
 	//   getData(&latitude, &longnitude, &degree);
 
@@ -131,7 +128,6 @@ void loop()
 	// 	// Serial.print("\t");
 	// 	// Serial.println(limittime);
 	// if(limittime-int((gps.time.hour()+9)*3600+(gps.time.minute())*60+gps.time.second())<160	){
-	//     //中心地に向かう
 	//     app_center(center_lat,center_lng);
 	// 	// Serial.print("MOVE");
 	//     while(1){
@@ -143,11 +139,9 @@ void loop()
 
 	app_pi(pA_lat, pA_lng);
 	lotate_pi(pA_lat, pA_lng, pB_lat, pB_lng, 0);
-	if (limittime - int((gps.time.hour() + 9) * 3600 + (gps.time.minute()) * 60 + gps.time.second()) < 60)
+	if (limittime - int((gps.time.hour() + 9) * 3600 + (gps.time.minute()) * 60 + gps.time.second()) < 60) // It takes 60sec to go and return from a pylon
 	{
-		//中心地に向かう
 		app_center(center_lat, center_lng);
-
 		while (1)
 		{
 		}
@@ -156,14 +150,17 @@ void loop()
 	lotate_pi(pB_lat, pB_lng, pA_lat, pA_lng, 1);
 	if (limittime - int((gps.time.hour() + 9) * 3600 + (gps.time.minute()) * 60 + gps.time.second()) < 60)
 	{
-		//中心地に向かう
 		app_center(center_lat, center_lng);
-
 		while (1)
 		{
 		}
 	}
 }
+
+/// @brief Set signal to VNH5019 form motor power
+/// @param l_power
+/// @param r_power
+/// @param m_break
 void setMotorPower(int l_power, int r_power, boolean m_break)
 {
 
@@ -212,6 +209,11 @@ void setMotorPower(int l_power, int r_power, boolean m_break)
 	}
 	analogWrite(R_MOTOR_PWM, abs(r_power));
 }
+
+/// @brief Get GNSS and Compass Data
+/// @param gps_lat
+/// @param gps_lng
+/// @param compass_deg
 void getData(double *gps_lat, double *gps_lng, float *compass_deg)
 {
 
@@ -243,6 +245,10 @@ void getData(double *gps_lat, double *gps_lng, float *compass_deg)
 		}
 	}
 }
+/// @brief Waiting for recieve GNSS data
+/// @param gps_lat
+/// @param gps_lng
+/// @param compass_deg
 void getDataFirst(double *gps_lat, double *gps_lng, float *compass_deg)
 {
 
@@ -274,6 +280,13 @@ void getDataFirst(double *gps_lat, double *gps_lng, float *compass_deg)
 		}
 	}
 }
+/// @brief Calculation direction and distance from current position to pylon
+/// @param d_lat
+/// @param d_lng
+/// @param g_lat
+/// @param g_lng
+/// @param dis
+/// @param dir
 void dirDisCalc(double d_lat, double d_lng, double g_lat, double g_lng, double *dis, double *dir)
 {
 	double pi = 3.14159265359;
@@ -300,6 +313,10 @@ double disCalc(double d_lat, double d_lng, double g_lat, double g_lng)
 	double dis = earth_radius * acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lng2 - lng1));
 	return dis;
 }
+/// @brief Calculate difference compass degree and pylon degree.It has a bug.
+/// @param direction
+/// @param compass_point
+/// @param move_direction
 void moveDirCalc(double direction, double compass_point, double *move_direction)
 {
 	if (direction > compass_point)
@@ -329,7 +346,10 @@ void moveDirCalc(double direction, double compass_point, double *move_direction)
 		}
 	}
 }
-
+/// @brief Calculate difference compass degree and pylon degree.
+/// @param direction
+/// @param compass_point
+/// @param move_direction
 void moveDirCalc2(double direction, double compass_point, double *move_direction)
 {
 	if (direction > compass_point)
@@ -359,7 +379,9 @@ void moveDirCalc2(double direction, double compass_point, double *move_direction
 		}
 	}
 }
-
+/// @brief Move to Center Circle
+/// @param g_lat
+/// @param g_lng
 void app_center(double g_lat, double g_lng)
 {
 	while (1)
@@ -416,6 +438,9 @@ void app_center(double g_lat, double g_lng)
 		}
 	}
 }
+/// @brief Approach center circle
+/// @param g_lat
+/// @param g_lng
 void app_pi(double g_lat, double g_lng)
 {
 	while (1)
@@ -468,7 +493,12 @@ void app_pi(double g_lat, double g_lng)
 		}
 	}
 }
-
+/// @brief Go around a pylon
+/// @param p_lat
+/// @param p_lng
+/// @param next_p_lat The other pylon. It is used to escape a pylon.
+/// @param next_p_lng The other pylon. It is used to escape a pylon.
+/// @param clock True for CW,false for CCW
 void lotate_pi(double p_lat, double p_lng, double next_p_lat, double next_p_lng, int clock)
 {
 	double other_dist;
